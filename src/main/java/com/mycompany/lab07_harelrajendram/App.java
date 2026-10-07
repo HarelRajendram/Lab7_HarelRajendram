@@ -1,10 +1,18 @@
 package com.mycompany.lab07_harelrajendram;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.animation.PathTransition.OrientationType;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -23,7 +31,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-       Pane pane = new Pane();
+       BorderPane bPane = new BorderPane();
+       
+       Button start = new Button("start");
+       Button reset = new Button("reset");
+       Button exit = new Button("exit");
+       
        Circle myCircle = new Circle(15,15,25);
        myCircle.setFill(Color.RED);
        
@@ -47,12 +60,31 @@ public class App extends Application {
        pt.setNode(myCircle);
        pt.setPath(rect);
        pt.setOrientation(OrientationType.ORTHOGONAL_TO_TANGENT);
-       pt.setCycleCount(4);
        
-       pane.getChildren().addAll(myCircle,rect,M,N,P,Q,ellipse);
-       pt.play();
+       TranslateTransition move = new TranslateTransition(Duration.seconds(2),ellipse);
+       move.setToX(70);
        
-        var scene = new Scene(pane, 640, 480);
+       FadeTransition fade = new FadeTransition(Duration.seconds(2),ellipse);
+       fade.setFromValue(1.0);
+       fade.setToValue(0.30);
+       
+       ScaleTransition scale = new ScaleTransition(Duration.seconds(2),ellipse);
+       scale.setToX(1.5);
+       scale.setToY(1.5);
+       
+       RotateTransition rotate = new RotateTransition(Duration.seconds(2),ellipse);
+       rotate.setFromAngle(0.0);
+       rotate.setToAngle(45.0);
+       
+       bPane.getChildren().addAll(myCircle,rect,M,N,P,Q,ellipse);
+       
+       SequentialTransition seq = new SequentialTransition(fade,scale,rotate,move);
+       
+       ParallelTransition paral = new ParallelTransition(pt,seq);
+       
+       paral.play();
+       
+        var scene = new Scene(bPane, 740, 580);
         stage.setScene(scene);
         stage.show();
     }
